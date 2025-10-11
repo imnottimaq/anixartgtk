@@ -1,0 +1,26 @@
+using Gtk 4.0;
+using Adw 1;
+
+Gtk.ApplicationWindow AnilibriaGtk {
+    title: _("AnilibriaGtk");
+    default-width: 800;
+    default-height: 600;
+    margin-top: 12;
+    margin-bottom: 12;
+    margin-start: 12;
+    margin-end: 12;
+    titlebar: Adw.HeaderBar header-bar {
+      show-title: false;
+      Gtk.Button releases-button {
+        label: _("Релизы");
+      }
+      Gtk.Button catalogue-button {
+        label: _("Каталог");
+      }
+      Gtk.Button favourites-button {
+        label: _("Избранное");
+      }
+    };
+    Gtk.ScrolledWindow main {
+    }
+}
