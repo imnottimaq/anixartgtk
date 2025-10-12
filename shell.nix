@@ -8,6 +8,7 @@ pkgs.mkShell {
     pkgs.gtk4
     pkgs.gobject-introspection
     pkgs.libadwaita
+    pkgs.mpv-unwrapped.dev
   ];
 
   # Это ключевой момент — чтобы pkg-config видел .pc-файлы
@@ -16,10 +17,11 @@ pkgs.mkShell {
     gtk4
     gobject-introspection
     libadwaita
+    mpv-unwrapped.dev
   ];
 
   shellHook = ''
     export CGO_ENABLED=1
-    echo "✅ Environment ready. You can now run 'go build'"
+    echo "Environment ready. You can now run 'make'"
   '';
 }
