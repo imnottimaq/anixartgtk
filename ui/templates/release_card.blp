@@ -1,13 +1,21 @@
 using Gtk 4.0;
 
 Gtk.Box release-card {
-    orientation: vertical;
-    Gtk.Picture poster {
+    orientation: horizontal;
+    Gtk.Image poster {
+    width-request: 91;
+    height-request: 130;
     }
-    Gtk.Label name {
-    }
-    Gtk.Label name-alternative {
-    }
-    Gtk.Label description {
+    Gtk.Box {
+        orientation: vertical;
+        Gtk.Label name {
+            halign: start;
+            
+        }
+        Gtk.Label name-alternative {
+        }
+        Gtk.Label description {
+            halign: start;
+        }
     }
 }

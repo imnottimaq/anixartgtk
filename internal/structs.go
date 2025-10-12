@@ -1,6 +1,6 @@
 package internal
 
-type Release struct {  //TODO: implement full release struct
+type Release struct { //TODO: implement full release struct
 	Id   int `json:"id"`
 	Type struct {
 		Rus string `json:"description"`
@@ -37,5 +37,10 @@ type Release struct {  //TODO: implement full release struct
 }
 
 type ApiStatus struct {
-	IsAlive bool `json:"is_alive"`
+	IsAlive   bool     `json:"is_alive"`
+	Endpoints []string `json:"available_api_endpoints"`
+}
+
+type Config struct {
+	Endpoints []string `json:"endpoints"`
 }

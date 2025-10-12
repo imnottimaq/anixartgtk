@@ -46,8 +46,16 @@ func SwitchToReleasesTab() *gtk.Box {
 func newReleaseCard(release internal.Release) *gtk.Box {
 	cardBuilder := gtk.NewBuilderFromString(releaseCardXML)
 	releaseCard := cardBuilder.GetObject("release-card").Cast().(*gtk.Box)
+	picture := cardBuilder.GetObject("poster").Cast().(*gtk.Image)
 	name := cardBuilder.GetObject("name").Cast().(*gtk.Label)
 	description := cardBuilder.GetObject("description").Cast().(*gtk.Label)
+	img, err := internal.GetPosterImage(release.Poster.Main)
+	if err != nil {
+		print(err)
+		return nil
+	}
+	print(img)
+	picture.SetFromFile(img)
 	name.SetLabel(release.Name.Eng)
 	description.SetLabel(release.Description)
 
