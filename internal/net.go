@@ -12,25 +12,22 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var apiUrl string = "https://anilibria.top" //TODO: move this into config for user to be able to change it if for example main server isnt available in their region
+var apiUrl string = "https://api-s.anixsekai.com" //TODO: move this into config for user to be able to change it if for example main server isnt available in their region
 
-func GetLatestReleases() ([]Release, error) { //TODO: better error handling
-	if err := ApiStatusCheck(); err != nil {
-		return nil, fmt.Errorf("[GetLatestReleases] %v", err)
-	}
-	_, body, err := fasthttp.Get(nil, apiUrl+"/api/v1/anime/releases/latest?limit=10")
+func GetLatestReleases() (*LatestReleases, error) { //TODO: better error handling
+	_, body, err := fasthttp.Get(nil, apiUrl+"/filter/0")
 	if err != nil {
 		return nil, fmt.Errorf("[GetLatestReleases] %v", err)
 	}
-	var releases []Release
+	var releases LatestReleases
 	if err = json.Unmarshal(body, &releases); err != nil {
 		return nil, fmt.Errorf("[GetLatestReleases] %v", err)
 	}
 	fmt.Println(releases)
-	return releases, nil
+	return &releases, nil
 }
 
-func ApiStatusCheck() error { //TODO: get available endpoints and save them into config
+/*func ApiStatusCheck() error { //TODO: remake using alternative from anixart
 	_, body, err := fasthttp.Get(nil, apiUrl+"/api/v1/app/status")
 	if err != nil {
 		return err
@@ -43,11 +40,12 @@ func ApiStatusCheck() error { //TODO: get available endpoints and save them into
 		return fmt.Errorf("[ApiStatusCheck] API is not alive")
 	}
 	return nil
-}
+}*/
+
 func GetPosterImage(imageUrl string) (string, error) {
 	hash := sha256.Sum256([]byte(imageUrl))
 	filename := hex.EncodeToString(hash[:]) + ".jpg"
-	savePath, err := xdg.CacheFile(filepath.Join("anilibriagtk", "images", filename))
+	savePath, err := xdg.CacheFile(filepath.Join("anixartgtk", "images", filename))
 	if err != nil {
 		return "", fmt.Errorf("[GetPosterImage] %v", err)
 	}

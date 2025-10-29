@@ -19,7 +19,7 @@ var releasesXML string
 
 func Activate(app *gtk.Application) {
 	builder := gtk.NewBuilderFromString(windowXML)
-	window := builder.GetObject("AnilibriaGtk").Cast().(*gtk.ApplicationWindow)
+	window := builder.GetObject("AnixartGtk").Cast().(*gtk.ApplicationWindow)
 	main := builder.GetObject("main").Cast().(*gtk.ScrolledWindow)
 	releaseTab := SwitchToReleasesTab()
 	main.SetChild(releaseTab)
@@ -36,7 +36,7 @@ func SwitchToReleasesTab() *gtk.Box {
 		errorLabel := gtk.NewLabel("Error while trying to parse info from Anilibria.\nMore info on the console.")
 		tab.Append(errorLabel)
 	}
-	for _, release := range releases {
+	for _, release := range releases.Releases {
 		releaseCard := newReleaseCard(release)
 		tab.Append(releaseCard)
 	}
@@ -49,14 +49,14 @@ func newReleaseCard(release internal.Release) *gtk.Box {
 	picture := cardBuilder.GetObject("poster").Cast().(*gtk.Image)
 	name := cardBuilder.GetObject("name").Cast().(*gtk.Label)
 	description := cardBuilder.GetObject("description").Cast().(*gtk.Label)
-	img, err := internal.GetPosterImage(release.Poster.Main)
+	img, err := internal.GetPosterImage(release.Poster)
 	if err != nil {
 		print(err)
 		return nil
 	}
 	print(img)
 	picture.SetFromFile(img)
-	name.SetLabel(release.Name.Eng)
+	name.SetLabel(release.Name)
 	description.SetLabel(release.Description)
 
 	return releaseCard

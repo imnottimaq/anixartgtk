@@ -8,6 +8,7 @@ pkgs.mkShell {
     pkgs.gtk4
     pkgs.gobject-introspection
     pkgs.libadwaita
+    pkgs.blueprint-compiler
     pkgs.mpv-unwrapped.dev
   ];
 

@@ -12,9 +12,9 @@ import (
 
 func main() {
 	adw.Init()
-	xdg.CacheFile("anilibriagtk")
-	xdg.ConfigFile("anilibriagtk")
-	app := gtk.NewApplication("com.github.imnottimaq.anilibriagtk", gio.ApplicationFlagsNone)
+	xdg.CacheFile("anixartgtk")
+	xdg.ConfigFile("anixartgtk")
+	app := gtk.NewApplication("com.github.imnottimaq.anixartgtk", gio.ApplicationFlagsNone)
 	app.ConnectActivate(func() { ui.Activate(app) })
 
 	if code := app.Run(os.Args); code > 0 {

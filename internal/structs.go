@@ -1,6 +1,6 @@
 package internal
 
-type Release struct { //TODO: implement full release struct
+/* type Release struct { //TODO: implement full release struct
 	Id   int `json:"id"`
 	Type struct {
 		Rus string `json:"description"`
@@ -43,4 +43,19 @@ type ApiStatus struct {
 
 type Config struct {
 	Endpoints []string `json:"endpoints"`
+}*/
+
+
+type LatestReleases struct {
+	Releases []Release `json:"content"`
+}
+
+type Release struct {
+	Id int `json:"id"`
+	Poster string `json:"image"`
+	PosterCacheName string `json:"poster"`
+	Source string `json:"source"`
+	Year string `json:"year"`
+	Description string `json:"description"`
+	Name string `json:"title_ru"`
 }
