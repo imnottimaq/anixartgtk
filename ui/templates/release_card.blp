@@ -2,20 +2,32 @@ using Gtk 4.0;
 
 Gtk.Box release-card {
     orientation: horizontal;
-    Gtk.Image poster {
-    width-request: 91;
-    height-request: 130;
+    spacing: 10;
+    
+    Gtk.Picture poster {
+        content-fit: contain;
+        can-shrink: false;
     }
+    
     Gtk.Box {
         orientation: vertical;
+        spacing: 5;
+        hexpand: true;
+        
         Gtk.Label name {
             halign: start;
-            
+            xalign: 0;
         }
+        
         Gtk.Label name-alternative {
+            halign: start;
+            xalign: 0;
         }
+        
         Gtk.Label description {
             halign: start;
+            xalign: 0;
+            wrap: true;
         }
     }
 }

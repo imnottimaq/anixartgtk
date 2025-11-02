@@ -12,19 +12,22 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var apiUrl string = "https://api-s.anixsekai.com" //TODO: move this into config for user to be able to change it if for example main server isnt available in their region
+var apiUrl string = "https://api-s.anixsekai.com"
+var alternativeApiUrl string = "https://mirror-s.anixmirai.com" //TODO: move this into config for user to be able to change it if for example main server isnt available in their region
 
-func GetLatestReleases() (*LatestReleases, error) { //TODO: better error handling
+func GetLatestReleases() (LatestReleases, error) { //TODO: better error handling
 	_, body, err := fasthttp.Get(nil, apiUrl+"/filter/0")
 	if err != nil {
-		return nil, fmt.Errorf("[GetLatestReleases] %v", err)
+
+		return LatestReleases{}, fmt.Errorf("[GetLatestReleases] %v", err)
 	}
 	var releases LatestReleases
 	if err = json.Unmarshal(body, &releases); err != nil {
-		return nil, fmt.Errorf("[GetLatestReleases] %v", err)
+		print(fmt.Sprintf("%v", releases))
+		print(apiUrl)
+		return LatestReleases{}, fmt.Errorf("[GetLatestReleases] %v", err)
 	}
-	fmt.Println(releases)
-	return &releases, nil
+	return releases, nil
 }
 
 /*func ApiStatusCheck() error { //TODO: remake using alternative from anixart
@@ -42,9 +45,15 @@ func GetLatestReleases() (*LatestReleases, error) { //TODO: better error handlin
 	return nil
 }*/
 
-func GetPosterImage(imageUrl string) (string, error) {
-	hash := sha256.Sum256([]byte(imageUrl))
-	filename := hex.EncodeToString(hash[:]) + ".jpg"
+func GetPosterImage(imageName string) (string, error) {
+	hash := sha256.Sum256([]byte(imageName))
+	currentApiUrl := new(string)
+	if ConfigData.UseAlternativeConnection {
+		currentApiUrl = &alternativeApiUrl
+	} else {
+		currentApiUrl = &apiUrl
+	}
+	filename := hex.EncodeToString(hash[:])
 	savePath, err := xdg.CacheFile(filepath.Join("anixartgtk", "images", filename))
 	if err != nil {
 		return "", fmt.Errorf("[GetPosterImage] %v", err)
@@ -52,7 +61,7 @@ func GetPosterImage(imageUrl string) (string, error) {
 	if _, err := os.Stat(savePath); err == nil {
 		return savePath, nil
 	}
-	_, body, err := fasthttp.Get(nil, apiUrl+imageUrl)
+	_, body, err := fasthttp.Get(nil, *currentApiUrl+"/posters/"+imageName+".jpg")
 	if err != nil {
 		return "", fmt.Errorf("[GetPosterImage] %v", err)
 	}

@@ -1,22 +1,36 @@
-APP_NAME := anilibriagtk
+.NOTPARALLEL:
+
+APP_NAME := anixartgtk
 BPL_SOURCES := $(wildcard ui/templates/*.blp)
 UI_TARGETS := $(BPL_SOURCES:.blp=.ui)
 
 all: $(UI_TARGETS) build
 
-run: $(UI_TARGETS) build exec
+run: all exec
+
+test: all exec clean
 
 ui/templates/%.ui: ui/templates/%.blp
 	@echo "Compiling $< → $@"
 	@blueprint-compiler compile --output $@ $<
-build:
+
+build: $(UI_TARGETS)
 	@echo "Building Go binary..."
-	@go build -o bin/anilibriagtk .
+	@mkdir -p bin
+	@go build -o bin/$(APP_NAME) .
+	@echo "Build complete: bin/$(APP_NAME)"
+
 exec:
 	@echo "Executing Go binary..."
-	@bin/$(APP_NAME)
+	@test -f bin/$(APP_NAME) || (echo "Error: Binary not found at bin/$(APP_NAME)" && exit 1)
+	@./bin/$(APP_NAME)
+
 cleanup:
 	@echo "Cleaning up generated .ui files..."
-	rm -f ui/templates/*.ui
+	@rm -f ui/templates/*.ui
 
-.PHONY: all run build exec cleanup clean
+clean: cleanup
+	@echo "Cleaning up binary..."
+	@rm -rf bin/
+
+.PHONY: all run build exec cleanup clean test

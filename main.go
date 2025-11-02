@@ -1,6 +1,7 @@
 package main
 
 import (
+	"AnilibriaGtk/internal"
 	"AnilibriaGtk/ui"
 	"os"
 
@@ -11,9 +12,10 @@ import (
 )
 
 func main() {
+	internal.ConfigData, _ = internal.ParseConfig()
 	adw.Init()
 	xdg.CacheFile("anixartgtk")
-	xdg.ConfigFile("anixartgtk")
+	xdg.ConfigFile("anixartgtk/config.json")
 	app := gtk.NewApplication("com.github.imnottimaq.anixartgtk", gio.ApplicationFlagsNone)
 	app.ConnectActivate(func() { ui.Activate(app) })
 

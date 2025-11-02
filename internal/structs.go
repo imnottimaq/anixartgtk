@@ -40,10 +40,10 @@ type ApiStatus struct {
 	IsAlive   bool     `json:"is_alive"`
 	Endpoints []string `json:"available_api_endpoints"`
 }
-
+*/
 type Config struct {
-	Endpoints []string `json:"endpoints"`
-}*/
+	UseAlternativeConnection bool `json:"use_alternative_connection"`
+}
 
 
 type LatestReleases struct {
