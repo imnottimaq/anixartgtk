@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"AnilibriaGtk/internal"
+	"AnixartGtk/internal"
 	_ "embed"
 	"fmt"
 
