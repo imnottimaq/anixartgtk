@@ -1,29 +1,52 @@
 using Gtk 4.0;
 using Adw 1;
 
-Gtk.ApplicationWindow AnixartGtk {
-    title: _("AnixartGtk");
-    default-width: 800;
-    default-height: 600;
-    margin-top: 12;
-    margin-bottom: 12;
-    margin-start: 12;
-    margin-end: 12;
-    titlebar: Adw.HeaderBar header-bar {
-      show-title: false;
-      Gtk.Button releases-button {
-        label: _("Релизы");
+Adw.ApplicationWindow AnixartGtk {
+  title: _("AnixartGtk");
+  default-width: 800;
+  default-height: 600;
+  
+  content: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar header-bar {
+      title-widget: Gtk.Box {
+        halign: center;
+        spacing: 12;
+        
+        Adw.ViewSwitcher view_switcher {
+          stack: view_stack;
+        }
+      };
+    }
+    
+    content: Adw.ViewStack view_stack {
+      Adw.ViewStackPage {
+        name: "releases";
+        title: _("Главная");
+        icon-name: "go-home-symbolic";
+        child: Gtk.ScrolledWindow releases_view {};
       }
-      Gtk.Button catalogue-button {
-        label: _("Каталог");
+      
+      Adw.ViewStackPage {
+        name: "overview";
+        title: _("Обзор");
+        icon-name: "compass2-symbolic";
+        child: Gtk.ScrolledWindow overview_view {};
       }
-      Gtk.Button favourites-button {
-        label: _("Избранное");
+      
+      Adw.ViewStackPage {
+        name: "favourites";
+        title: _("Закладки");
+        icon-name: "star-filled-rounded-symbolic";
+        child: Gtk.ScrolledWindow favourites_view {};
+      }
+
+      Adw.ViewStackPage {
+        name: "account";
+        title: _("Аккаунт");
+        icon-name: "person-symbolic";
+        child: Gtk.ScrolledWindow account_view {};
       }
     };
-    Adw.NavigationSplitView sidebar{
-      
-    }
-    Gtk.ScrolledWindow main {
-    }
+  };
 }

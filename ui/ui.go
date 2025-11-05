@@ -5,6 +5,8 @@ import (
 	_ "embed"
 	"fmt"
 
+	"github.com/diamondburned/gotk4-adwaita/pkg/adw"
+	"github.com/diamondburned/gotk4/pkg/core/glib"
 	"github.com/diamondburned/gotk4/pkg/gdk/v4"
 	"github.com/diamondburned/gotk4/pkg/gdkpixbuf/v2"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
@@ -19,17 +21,25 @@ var releaseCardXML string
 //go:embed templates/releases.ui
 var releasesXML string
 
-func Activate(app *gtk.Application) {
+func Activate(app *adw.Application) {
 	builder := gtk.NewBuilderFromString(windowXML)
-	window := builder.GetObject("AnixartGtk").Cast().(*gtk.ApplicationWindow)
-	main := builder.GetObject("main").Cast().(*gtk.ScrolledWindow)
-	releaseTab := SwitchToReleasesTab()
-	main.SetChild(releaseTab)
-	window.SetApplication(app)
+	window := builder.GetObject("AnixartGtk").Cast().(*adw.ApplicationWindow)
+	window.SetApplication(&app.Application)
+	view := builder.GetObject("releases_view").Cast().(*gtk.ScrolledWindow)
+	loadingBox, spinner := createLoadingBox("Загрузка релизов...")
+	view.SetChild(loadingBox)
 	window.Present()
+
+	go func() {
+		releaseTab := switchToReleasesTab()
+		glib.IdleAdd(func() {
+			spinner.Stop()
+			view.SetChild(releaseTab)
+		})
+	}()
 }
 
-func SwitchToReleasesTab() *gtk.Box {
+func switchToReleasesTab() *gtk.Box {
 	builder := gtk.NewBuilderFromString(releasesXML)
 	tab := builder.GetObject("releases").Cast().(*gtk.Box)
 	releases, err := internal.GetLatestReleases()
@@ -42,6 +52,24 @@ func SwitchToReleasesTab() *gtk.Box {
 		tab.Append(releaseCard)
 	}
 	return tab
+}
+
+func createLoadingBox(message string) (*gtk.Box, *gtk.Spinner) {
+	loadingBox := gtk.NewBox(gtk.OrientationVertical, 12)
+	loadingBox.SetVAlign(gtk.AlignCenter)
+	loadingBox.SetHAlign(gtk.AlignCenter)
+
+	spinner := gtk.NewSpinner()
+	spinner.SetSizeRequest(48, 48)
+	spinner.Start()
+
+	loadingLabel := gtk.NewLabel(message)
+	loadingLabel.AddCSSClass("title-2")
+
+	loadingBox.Append(spinner)
+	loadingBox.Append(loadingLabel)
+
+	return loadingBox, spinner
 }
 
 func newReleaseCard(release internal.Release) *gtk.Box {
