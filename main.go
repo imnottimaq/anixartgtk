@@ -1,8 +1,8 @@
 package main
 
 import (
-	"AnilibriaGtk/internal"
-	"AnilibriaGtk/ui"
+	"AnixartGtk/internal"
+	"AnixartGtk/ui"
 	"os"
 
 	"github.com/adrg/xdg"

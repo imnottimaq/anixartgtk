@@ -1,4 +1,4 @@
-module AnilibriaGtk
+module AnixartGtk
 
 go 1.24.0
 
