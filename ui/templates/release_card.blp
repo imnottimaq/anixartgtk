@@ -1,33 +1,37 @@
 using Gtk 4.0;
 
-Gtk.Box release-card {
-    orientation: horizontal;
-    spacing: 10;
+Gtk.Button release-card {
+    child: Gtk.Box {
+        orientation: horizontal;
+        spacing: 10;
     
-    Gtk.Picture poster {
-        content-fit: contain;
-        can-shrink: false;
-    }
+        Gtk.Picture poster {
+            content-fit: contain;
+            can-shrink: false;
+            styles ["card"]
+        }
     
-    Gtk.Box {
-        orientation: vertical;
-        spacing: 5;
-        hexpand: true;
+        Gtk.Box {
+            orientation: vertical;
+            spacing: 5;
+            hexpand: true;
         
-        Gtk.Label name {
-            halign: start;
-            xalign: 0;
-        }
+            Gtk.Label name {
+                halign: start;
+                xalign: 0;
+            }
         
-        Gtk.Label name-alternative {
-            halign: start;
-            xalign: 0;
-        }
+            Gtk.Label name-alternative {
+                halign: start;
+                xalign: 0;
+            }
         
-        Gtk.Label description {
-            halign: start;
-            xalign: 0;
-            wrap: true;
+            Gtk.Label description {
+                halign: start;
+                xalign: 0;
+                wrap: true;
+            }
         }
-    }
+    };
+    styles ["flat"]
 }

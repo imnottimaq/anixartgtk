@@ -1,0 +1,92 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.NavigationPage release-detail {
+  title: "Release";
+  
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {}
+    
+    content: Gtk.ScrolledWindow {
+      Gtk.Box {
+        orientation: vertical;
+        spacing: 20;
+        margin-top: 20;
+        margin-bottom: 20;
+        margin-start: 20;
+        margin-end: 20;
+        
+        // Large poster
+        Gtk.Picture detail-poster {
+          content-fit: cover;
+          width-request: 300;
+          height-request: 400;
+          halign: center;
+          styles ["card"]
+        }
+        
+        // Title section
+        Gtk.Box {
+          orientation: vertical;
+          spacing: 10;
+          
+          Gtk.Label detail-name {
+            halign: start;
+            xalign: 0;
+            wrap: true;
+            styles ["title-1"]
+          }
+          
+          Gtk.Label detail-name-alternative {
+            halign: start;
+            xalign: 0;
+            wrap: true;
+            styles ["title-3"]
+          }
+        }
+        
+        // Description
+        Gtk.Label detail-description {
+          halign: start;
+          xalign: 0;
+          wrap: true;
+          styles ["body"]
+        }
+        
+        // Additional info section
+        Gtk.Box {
+          orientation: vertical;
+          spacing: 10;
+          
+          Adw.ActionRow {
+            title: "Type";
+            
+            [suffix]
+            Gtk.Label detail-type {
+              label: "TV Series";
+            }
+          }
+          
+          Adw.ActionRow {
+            title: "Episodes";
+            
+            [suffix]
+            Gtk.Label detail-episodes {
+              label: "12";
+            }
+          }
+          
+          Adw.ActionRow {
+            title: "Status";
+            
+            [suffix]
+            Gtk.Label detail-status {
+              label: "Ongoing";
+            }
+          }
+        }
+      }
+    };
+  };
+}

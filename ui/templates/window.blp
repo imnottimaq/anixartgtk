@@ -2,51 +2,58 @@ using Gtk 4.0;
 using Adw 1;
 
 Adw.ApplicationWindow AnixartGtk {
-  title: _("AnixartGtk");
+  title: "AnixartGtk";
   default-width: 800;
   default-height: 600;
   
-  content: Adw.ToolbarView {
-    [top]
-    Adw.HeaderBar header-bar {
-      title-widget: Gtk.Box {
-        halign: center;
-        spacing: 12;
-        
-        Adw.ViewSwitcher view_switcher {
-          stack: view_stack;
+  content: Adw.NavigationView nav_view {
+    Adw.NavigationPage {
+      title: "AnixartGtk";
+      tag: "main";
+      
+      child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar header-bar {
+          title-widget: Gtk.Box {
+            halign: center;
+            spacing: 12;
+            
+            Adw.ViewSwitcher view_switcher {
+              stack: view_stack;
+            }
+          };
         }
+        
+        content: Adw.ViewStack view_stack {
+          Adw.ViewStackPage {
+            name: "releases";
+            title: "Главная";
+            icon-name: "go-home-symbolic";
+            child: Gtk.ScrolledWindow releases_view {};
+          }
+          
+          Adw.ViewStackPage {
+            name: "overview";
+            title: "Обзор";
+            icon-name: "compass2-symbolic";
+            child: Gtk.ScrolledWindow overview_view {};
+          }
+          
+          Adw.ViewStackPage {
+            name: "favourites";
+            title: "Закладки";
+            icon-name: "star-filled-rounded-symbolic";
+            child: Gtk.ScrolledWindow favourites_view {};
+          }
+          
+          Adw.ViewStackPage {
+            name: "account";
+            title: "Аккаунт";
+            icon-name: "person-symbolic";
+            child: Gtk.ScrolledWindow account_view {};
+          }
+        };
       };
     }
-    
-    content: Adw.ViewStack view_stack {
-      Adw.ViewStackPage {
-        name: "releases";
-        title: _("Главная");
-        icon-name: "go-home-symbolic";
-        child: Gtk.ScrolledWindow releases_view {};
-      }
-      
-      Adw.ViewStackPage {
-        name: "overview";
-        title: _("Обзор");
-        icon-name: "compass2-symbolic";
-        child: Gtk.ScrolledWindow overview_view {};
-      }
-      
-      Adw.ViewStackPage {
-        name: "favourites";
-        title: _("Закладки");
-        icon-name: "star-filled-rounded-symbolic";
-        child: Gtk.ScrolledWindow favourites_view {};
-      }
-
-      Adw.ViewStackPage {
-        name: "account";
-        title: _("Аккаунт");
-        icon-name: "person-symbolic";
-        child: Gtk.ScrolledWindow account_view {};
-      }
-    };
   };
 }
