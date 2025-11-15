@@ -1,0 +1,31 @@
+using Gtk 4.0;
+
+Gtk.Box dub-card {
+    orientation: horizontal;
+    spacing: 12;
+
+    Gtk.Box {
+        orientation: vertical;
+        Gtk.Label provider {
+            label: "Provider Stub";
+        }
+        Gtk.Label cast {
+            label: "Cast Stub";
+        }
+    }
+
+    Gtk.Label episodes-count {
+        label: "67 episodes";
+    }
+
+    [end]
+    Gtk.Box views {
+        spacing: 6;
+        Gtk.Image {
+            icon-name: "eye-open-negative-filled-symbolic";
+        }
+        Gtk.Label views-count {
+            label: "View Count";
+        }
+    }
+}

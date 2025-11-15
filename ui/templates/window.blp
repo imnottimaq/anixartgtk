@@ -29,7 +29,8 @@ Adw.ApplicationWindow AnixartGtk {
             name: "releases";
             title: "Главная";
             icon-name: "go-home-symbolic";
-            child: Gtk.ScrolledWindow releases_view {};
+            child: Gtk.ScrolledWindow releases_view {
+            };
           }
           
           Adw.ViewStackPage {
@@ -56,4 +57,10 @@ Adw.ApplicationWindow AnixartGtk {
       };
     }
   };
+}
+
+Gtk.Box releases {
+  visible: false;
+  orientation: vertical;
+  spacing: 12;
 }

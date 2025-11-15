@@ -16,7 +16,6 @@ func Activate(app *adw.Application) {
 	window := builder.GetObject("AnixartGtk").Cast().(*adw.ApplicationWindow)
 	window.SetApplication(&app.Application)
 
-	// Get the navigation view from the blueprint
 	navView := builder.GetObject("nav_view").Cast().(*adw.NavigationView)
 
 	view := builder.GetObject("releases_view").Cast().(*gtk.ScrolledWindow)

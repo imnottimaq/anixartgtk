@@ -4,6 +4,7 @@ import (
 	"AnixartGtk/internal"
 	_ "embed"
 	"fmt"
+	"strconv"
 
 	"github.com/diamondburned/gotk4-adwaita/pkg/adw"
 	"github.com/diamondburned/gotk4/pkg/gdk/v4"
@@ -14,16 +15,19 @@ import (
 //go:embed templates/release_card.ui
 var releaseCardXML string
 
-//go:embed templates/releases.ui
-var releasesXML string
-
 //go:embed templates/release_page.ui
 var releasePageXML string
 
-func switchToReleasesTab(navView *adw.NavigationView) *gtk.Box {
-	builder := gtk.NewBuilderFromString(releasesXML)
-	tab := builder.GetObject("releases").Cast().(*gtk.Box)
+//go:embed templates/select_dub_page.ui
+var selectDubPageXML string
 
+//go:embed templates/dub_card.ui
+var dubCardXML string
+
+func switchToReleasesTab(navView *adw.NavigationView) *gtk.Box {
+	builder := gtk.NewBuilderFromString(windowXML)
+	tab := builder.GetObject("releases").Cast().(*gtk.Box)
+	tab.SetVisible(true)
 	releases, err := internal.GetLatestReleases()
 	if err != nil {
 		errorLabel := gtk.NewLabel("Error while trying to parse info from Anixart.\nMore info on the console.")
@@ -72,41 +76,87 @@ func newReleaseCard(release internal.Release, navView *adw.NavigationView) *gtk.
 	name.SetLabel(release.Name)
 	description.SetLabel(release.Description)
 
-	// Connect click handler
 	releaseCard.ConnectClicked(func() {
-		showReleaseDetail(release, navView)
+		showReleaseDetail(strconv.Itoa(release.Id), navView)
 	})
 
 	return releaseCard
 }
 
-func showReleaseDetail(release internal.Release, navView *adw.NavigationView) {
-	// Load the release page blueprint
+func showReleaseDetail(id string, navView *adw.NavigationView) {
+	data, err := internal.GetDetailedReleaseInfo(id)
+	releaseDetails := data.Release
+	if err != nil {
+		print(fmt.Printf("%v", err))
+	}
+	print(fmt.Printf("%v", releaseDetails))
+
 	releasePageBuilder := gtk.NewBuilderFromString(releasePageXML)
 	releasePage := releasePageBuilder.GetObject("release-detail").Cast().(*adw.NavigationPage)
 
-	// Set the page title
-	releasePage.SetTitle(release.Name)
-
-	// Get all the widgets from the blueprint and populate them
 	detailPoster := releasePageBuilder.GetObject("detail-poster").Cast().(*gtk.Picture)
 	detailName := releasePageBuilder.GetObject("detail-name").Cast().(*gtk.Label)
+	detailNameAlternative := releasePageBuilder.GetObject("detail-name-alternative").Cast().(*gtk.Label)
 	detailDescription := releasePageBuilder.GetObject("detail-description").Cast().(*gtk.Label)
+	detailEpisodes := releasePageBuilder.GetObject("detail-episodes").Cast().(*gtk.Label)
 
-	img, err := internal.GetPosterImage(release.PosterCacheName)
+	img, err := internal.GetPosterImage(releaseDetails.PosterCacheName)
 	if err == nil {
 		pixbuf, err := gdkpixbuf.NewPixbufFromFile(img)
 		if err == nil {
 			originalWidth := pixbuf.Width()
 			originalHeight := pixbuf.Height()
-			targetWidth := 300
+			targetWidth := 200
 			targetHeight := int(float64(originalHeight) * float64(targetWidth) / float64(originalWidth))
 			scaledPixbuf := pixbuf.ScaleSimple(targetWidth, targetHeight, gdkpixbuf.InterpBilinear)
 			texture := gdk.NewTextureForPixbuf(scaledPixbuf)
 			detailPoster.SetPaintable(texture)
 		}
 	}
-	detailName.SetLabel(release.Name)
-	detailDescription.SetLabel(release.Description)
+	detailName.SetLabel(releaseDetails.Name)
+	detailEpisodes.SetLabel(strconv.Itoa(releaseDetails.EpisodesTotal))
+	detailNameAlternative.SetLabel(releaseDetails.NameOriginal)
+	detailDescription.SetLabel(releaseDetails.Description)
+	watchButton := releasePageBuilder.GetObject("watch-button").Cast().(*gtk.Button)
+	watchButton.ConnectClicked(func() {
+		showSelectDub(id, navView)
+	})
 	navView.Push(releasePage)
+}
+
+func showSelectDub(id string, navView *adw.NavigationView) {
+	if id == "" {
+		return
+	}
+	providers, err := internal.GetDubProvidersForEpisode(id)
+	if err != nil {
+		return
+	}
+	selectDubPageBuilder := gtk.NewBuilderFromString(selectDubPageXML)
+	selectDubNavPage := selectDubPageBuilder.GetObject("dub-selection").Cast().(*adw.NavigationPage)
+	selectDubBox := selectDubPageBuilder.GetObject("dub-main").Cast().(*gtk.Box)
+	for _, provider := range providers.Providers {
+		dubCard := newDubCard(provider)
+		selectDubBox.Append(dubCard)
+	}
+	navView.Push(selectDubNavPage)
+}
+
+func newDubCard(provider internal.DubProvider) *gtk.Box {
+	builder := gtk.NewBuilderFromString(dubCardXML)
+	dubTemplate := builder.GetObject("dub-card").Cast().(*gtk.Box)
+	castLabel := builder.GetObject("cast").Cast().(*gtk.Label)
+	if provider.Cast != "" {
+		castLabel.SetLabel(provider.Cast)
+		castLabel.SetVisible(true)
+	} else {
+		castLabel.SetVisible(false)
+	}
+	dubProviderName := builder.GetObject("provider").Cast().(*gtk.Label)
+	dubProviderName.SetLabel(provider.Name)
+	episodesCountLabel := builder.GetObject("episodes-count").Cast().(*gtk.Label)
+	episodesCountLabel.SetLabel(strconv.Itoa(provider.EpisodesCount) + " серий")
+	viewsCountLabel := builder.GetObject("views-count").Cast().(*gtk.Label)
+	viewsCountLabel.SetLabel(strconv.Itoa(provider.ViewCount) + " просмотров")
+	return dubTemplate
 }
