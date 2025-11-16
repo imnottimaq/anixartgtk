@@ -12,17 +12,14 @@ import (
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 )
 
-//go:embed templates/release_card.ui
-var releaseCardXML string
+//go:embed templates/templates.ui
+var templatesXML string
 
 //go:embed templates/release_page.ui
 var releasePageXML string
 
 //go:embed templates/select_dub_page.ui
 var selectDubPageXML string
-
-//go:embed templates/dub_card.ui
-var dubCardXML string
 
 func switchToReleasesTab(navView *adw.NavigationView) *gtk.Box {
 	builder := gtk.NewBuilderFromString(windowXML)
@@ -46,8 +43,8 @@ func switchToReleasesTab(navView *adw.NavigationView) *gtk.Box {
 }
 
 func newReleaseCard(release internal.Release, navView *adw.NavigationView) *gtk.Button {
-	cardBuilder := gtk.NewBuilderFromString(releaseCardXML)
-	releaseCard := cardBuilder.GetObject("release-card").Cast().(*gtk.Button)
+	cardBuilder := gtk.NewBuilderFromString(templatesXML)
+	releaseCard := cardBuilder.GetObject("release-card-template").Cast().(*gtk.Button)
 	picture := cardBuilder.GetObject("poster").Cast().(*gtk.Picture)
 	name := cardBuilder.GetObject("name").Cast().(*gtk.Label)
 	description := cardBuilder.GetObject("description").Cast().(*gtk.Label)
@@ -142,9 +139,9 @@ func showSelectDub(id string, navView *adw.NavigationView) {
 	navView.Push(selectDubNavPage)
 }
 
-func newDubCard(provider internal.DubProvider) *gtk.Box {
-	builder := gtk.NewBuilderFromString(dubCardXML)
-	dubTemplate := builder.GetObject("dub-card").Cast().(*gtk.Box)
+func newDubCard(provider internal.DubProvider) *gtk.Button {
+	builder := gtk.NewBuilderFromString(templatesXML)
+	dubTemplate := builder.GetObject("dub-card").Cast().(*gtk.Button)
 	castLabel := builder.GetObject("cast").Cast().(*gtk.Label)
 	if provider.Cast != "" {
 		castLabel.SetLabel(provider.Cast)

@@ -1,0 +1,92 @@
+using Gtk 4.0;
+
+Gtk.Button source-button-template {
+    Gtk.Label source {
+        label: "Source Stub";
+    }
+    Gtk.Label episodes-count-source {
+        label: "67 episodes";
+    } 
+}
+
+Gtk.Button dub-card {
+    child: Gtk.Box {
+        orientation: horizontal;
+        spacing: 12;
+        hexpand: true;
+
+        Gtk.Box {
+            orientation: vertical;
+            spacing: 4;
+            hexpand: true;
+
+            Gtk.Label provider {
+                halign: start;
+                xalign: 0;
+                label: "Provider Stub";
+            }
+
+            Gtk.Label cast {
+                halign: start;
+                xalign: 0;
+                label: "Cast Stub";
+            }
+
+            Gtk.Label episodes-count {
+                halign: start;
+                xalign: 0;
+                label: "67 episodes";
+            }
+        }
+
+        Gtk.Box views {
+            spacing: 6;
+            halign: end;
+
+            Gtk.Image {
+                icon-name: "eye-open-negative-filled-symbolic";
+            }
+
+            Gtk.Label views-count {
+                label: "View Count";
+            }
+        }
+    };
+    styles ["flat"]
+}
+
+Gtk.Button release-card-template {
+    child: Gtk.Box {
+        orientation: horizontal;
+        spacing: 10;
+    
+        Gtk.Picture poster {
+            content-fit: contain;
+            can-shrink: false;
+            styles ["card"]
+        }
+    
+        Gtk.Box {
+            orientation: vertical;
+            spacing: 5;
+            hexpand: true;
+        
+            Gtk.Label name {
+                halign: start;
+                xalign: 0;
+            }
+        
+            Gtk.Label name-alternative {
+                halign: start;
+                xalign: 0;
+            }
+        
+            Gtk.Label description {
+                halign: start;
+                xalign: 0;
+                wrap: true;
+            }
+        }
+    };
+    styles ["flat"]
+}

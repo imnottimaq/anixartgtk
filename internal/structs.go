@@ -56,3 +56,25 @@ type DubProvider struct {
 	EpisodesCount int    `json:"episodes_count"`
 	ViewCount     int    `json:"view_count"`
 }
+
+type SourceListResponse struct{
+	SourceList []Source `json:"sources"`
+}
+
+type Source struct{
+	Id int `json:"id"`
+	Type struct{
+		Name string `json:"name"`
+	}
+	Name string `json:"name"`
+}
+
+type EpisodesForSourceResponse struct{
+	Episodes []Episode `json:"episodes"`
+}
+
+type Episode struct{
+	Name string `json:"name"`
+	Url string `json:"url"`
+	IsIframe bool `json:"iframe"`
+}
