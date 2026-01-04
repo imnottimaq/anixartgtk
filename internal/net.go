@@ -60,11 +60,9 @@ func GetDetailedReleaseInfo(id string) (ReleaseDetailedResponse, error) {
 
 func GetPosterImage(imageName string) (string, error) {
 	hash := sha256.Sum256([]byte(imageName))
-	var currentApiUrl string
-	if ConfigData.UseAlternativeConnection {
-		currentApiUrl = alternativeApiUrl
-	} else {
-		currentApiUrl = apiUrl
+	posterApiURL := alternativeApiUrl
+	if posterApiURL == "" {
+		posterApiURL = apiUrl
 	}
 	filename := hex.EncodeToString(hash[:])
 	savePath, err := xdg.CacheFile(filepath.Join("anixartgtk", "images", filename))
@@ -74,13 +72,21 @@ func GetPosterImage(imageName string) (string, error) {
 	if _, err := os.Stat(savePath); err == nil {
 		return savePath, nil
 	}
-	resp, err := http.Get(currentApiUrl + "/posters/" + imageName + ".jpg")
+	posterURL := posterApiURL + "/posters/" + imageName + ".jpg"
+	resp, err := http.Get(posterURL)
 	if err != nil {
-		return "", fmt.Errorf("[GetPosterImage] %v", err)
+		return "", fmt.Errorf("[GetPosterImage] %v (url=%s)", err, posterURL)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("[GetPosterImage] unexpected status: %s (url=%s)", resp.Status, posterURL)
 	}
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("[GetPosterImage] %v", err)
+	}
+	if len(data) == 0 {
+		return "", fmt.Errorf("[GetPosterImage] empty image data")
 	}
 	if err := os.WriteFile(savePath, data, 0644); err != nil {
 		return "", fmt.Errorf("[GetPosterImage] %v", err)

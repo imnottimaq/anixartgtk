@@ -19,6 +19,7 @@ func Activate(app *adw.Application) {
 	navView := builder.GetObject("nav_view").Cast().(*adw.NavigationView)
 
 	view := builder.GetObject("releases_view").Cast().(*gtk.ScrolledWindow)
+	releasesBox := builder.GetObject("releases").Cast().(*gtk.Box)
 
 	loadingBox, spinner := createLoadingBox("Загрузка релизов...")
 	view.SetChild(loadingBox)
@@ -26,7 +27,7 @@ func Activate(app *adw.Application) {
 	window.Present()
 
 	go func() {
-		releaseTab := switchToReleasesTab(navView)
+		releaseTab := switchToReleasesTab(releasesBox, navView)
 		glib.IdleAdd(func() {
 			spinner.Stop()
 			view.SetChild(releaseTab)

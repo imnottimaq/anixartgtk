@@ -1,5 +1,7 @@
 package internal
 
+// Config-related code disabled.
+/*
 import (
 	"os"
 
@@ -26,7 +28,6 @@ func EditConfig(input Config) error {
 		return err
 	}
 	print("[EditConfig] Successfully parsed config.\n[EditConfig] Editing config...\n")
-	config.UseAlternativeConnection = input.UseAlternativeConnection
 	print("[EditConfig] Config edited.\n[EditConfig] Flushing it to file...\n")
 	configJson, err := json.Marshal(config)
 	if err != nil {
@@ -58,3 +59,4 @@ func ParseConfig() (*Config, error) {
 	print("[ParseConfig] Successfully parsed config.\n")
 	return &config, nil
 }
+*/

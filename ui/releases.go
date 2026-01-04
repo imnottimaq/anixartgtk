@@ -21,25 +21,23 @@ var releasePageXML string
 //go:embed templates/select_dub_page.ui
 var selectDubPageXML string
 
-func switchToReleasesTab(navView *adw.NavigationView) *gtk.Box {
-	builder := gtk.NewBuilderFromString(windowXML)
-	tab := builder.GetObject("releases").Cast().(*gtk.Box)
-	tab.SetVisible(true)
+func switchToReleasesTab(releasesBox *gtk.Box, navView *adw.NavigationView) *gtk.Box {
+	releasesBox.SetVisible(true)
 	releases, err := internal.GetLatestReleases()
 	if err != nil {
 		errorLabel := gtk.NewLabel("Error while trying to parse info from Anixart.\nMore info on the console.")
-		tab.Append(errorLabel)
-		return tab
+		releasesBox.Append(errorLabel)
+		return releasesBox
 	}
 
 	for _, release := range releases.Releases {
 		releaseCard := newReleaseCard(release, navView)
 		if releaseCard != nil {
-			tab.Append(releaseCard)
+			releasesBox.Append(releaseCard)
 		}
 	}
 
-	return tab
+	return releasesBox
 }
 
 func newReleaseCard(release internal.Release, navView *adw.NavigationView) *gtk.Button {

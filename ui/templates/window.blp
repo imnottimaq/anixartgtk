@@ -30,37 +30,36 @@ Adw.ApplicationWindow AnixartGtk {
             title: "Главная";
             icon-name: "go-home-symbolic";
             child: Gtk.ScrolledWindow releases_view {
+              Gtk.Box releases {
+                visible: false;
+                orientation: vertical;
+                spacing: 12;
+              }
             };
           }
           
           Adw.ViewStackPage {
             name: "overview";
             title: "Обзор";
-            icon-name: "compass2-symbolic";
+            icon-name: "view-grid-symbolic";
             child: Gtk.ScrolledWindow overview_view {};
           }
           
           Adw.ViewStackPage {
             name: "favourites";
             title: "Закладки";
-            icon-name: "star-filled-rounded-symbolic";
+            icon-name: "starred-symbolic";
             child: Gtk.ScrolledWindow favourites_view {};
           }
           
           Adw.ViewStackPage {
             name: "account";
             title: "Аккаунт";
-            icon-name: "person-symbolic";
+            icon-name: "avatar-default-symbolic";
             child: Gtk.ScrolledWindow account_view {};
           }
         };
       };
     }
   };
-}
-
-Gtk.Box releases {
-  visible: false;
-  orientation: vertical;
-  spacing: 12;
 }

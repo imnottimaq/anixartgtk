@@ -3,7 +3,6 @@ package internal
 import "net/http"
 
 type Config struct {
-	UseAlternativeConnection bool `json:"use_alternative_connection"`
 }
 
 type HttpResult struct {
@@ -57,24 +56,24 @@ type DubProvider struct {
 	ViewCount     int    `json:"view_count"`
 }
 
-type SourceListResponse struct{
+type SourceListResponse struct {
 	SourceList []Source `json:"sources"`
 }
 
-type Source struct{
-	Id int `json:"id"`
-	Type struct{
+type Source struct {
+	Id   int `json:"id"`
+	Type struct {
 		Name string `json:"name"`
 	}
 	Name string `json:"name"`
 }
 
-type EpisodesForSourceResponse struct{
+type EpisodesForSourceResponse struct {
 	Episodes []Episode `json:"episodes"`
 }
 
-type Episode struct{
-	Name string `json:"name"`
-	Url string `json:"url"`
-	IsIframe bool `json:"iframe"`
+type Episode struct {
+	Name     string `json:"name"`
+	Url      string `json:"url"`
+	IsIframe bool   `json:"iframe"`
 }
