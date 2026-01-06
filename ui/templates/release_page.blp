@@ -1,7 +1,7 @@
 using Gtk 4.0;
 using Adw 1;
 
-Adw.NavigationPage release-detail {
+Adw.NavigationPage release-page {
   title: "Release";
   
   child: Adw.ToolbarView {
@@ -10,83 +10,81 @@ Adw.NavigationPage release-detail {
     
     content: Gtk.ScrolledWindow {
       Gtk.Box {
-        orientation: vertical;
+        orientation: horizontal;
         spacing: 20;
         margin-top: 20;
         margin-bottom: 20;
         margin-start: 20;
         margin-end: 20;
-        
-        // Large poster
         Gtk.Picture detail-poster {
           content-fit: cover;
-          width-request: 300;
-          height-request: 400;
+          width-request: 200;
+          height-request: 267;
           halign: center;
           styles ["card"]
         }
-        
-        // Title section
+
         Gtk.Box {
           orientation: vertical;
           spacing: 10;
-          
-          Gtk.Label detail-name {
+          Gtk.Box {
+            orientation: vertical;
+            spacing: 10;
+
+            Gtk.Label detail-name {
+              halign: start;
+              xalign: 0;
+              wrap: true;
+              styles ["title-1"]
+            }
+
+            Gtk.Label detail-name-alternative {
+              halign: start;
+              xalign: 0;
+              wrap: true;
+              styles ["title-3"]
+            }
+
+            Gtk.Button watch-button {
+              label: "Watch";
+            }
+          }
+
+          Gtk.Label detail-description {
             halign: start;
             xalign: 0;
             wrap: true;
-            styles ["title-1"]
+            styles ["body"]
           }
-          
-          Gtk.Label detail-name-alternative {
-            halign: start;
-            xalign: 0;
-            wrap: true;
-            styles ["title-3"]
-          }
-          
-          Gtk.Button watch-button {
-            label: "Смотреть";
-          }
-        }
-        
-        // Description
-        Gtk.Label detail-description {
-          halign: start;
-          xalign: 0;
-          wrap: true;
-          styles ["body"]
-        }
-        
-        // Additional info section
-        Gtk.Box {
-          orientation: vertical;
-          spacing: 10;
-          
-          Adw.ActionRow {
-            title: "Type";
-            
-            [suffix]
-            Gtk.Label detail-type {
-              label: "TV Series";
+
+          Gtk.Box {
+            orientation: vertical;
+
+            Adw.ActionRow {
+              title: "Тип";
+
+              [suffix]
+              Gtk.Label detail-type {
+                label: "Сериал";
+              }
             }
-          }
-          
-          Adw.ActionRow {
-            title: "Episodes";
-            
-            [suffix]
-            Gtk.Label detail-episodes {
-              label: "12";
+
+            Adw.ActionRow {
+              title: "Количество эпизодов";
+
+              [suffix]
+              Gtk.Label detail-episodes {
+                label: "12";
+              }
             }
-          }
-          
-          Adw.ActionRow {
-            title: "Status";
-            
-            [suffix]
-            Gtk.Label detail-status {
-              label: "Ongoing";
+
+            Adw.ActionRow {
+              title: "Статус";
+
+              [suffix]
+              Gtk.Label detail-status {
+                label: "Онгоинг";
+              }
             }
           }
         }

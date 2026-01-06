@@ -14,6 +14,12 @@ Adw.ApplicationWindow AnixartGtk {
       child: Adw.ToolbarView {
         [top]
         Adw.HeaderBar header-bar {
+          [start]
+          Gtk.Button search_button {
+            icon-name: "system-search-symbolic";
+            tooltip-text: "Search";
+          }
+
           title-widget: Gtk.Box {
             halign: center;
             spacing: 12;
@@ -31,7 +37,6 @@ Adw.ApplicationWindow AnixartGtk {
             icon-name: "go-home-symbolic";
             child: Gtk.ScrolledWindow releases_view {
               Gtk.Box releases {
-                visible: false;
                 orientation: vertical;
                 spacing: 12;
               }

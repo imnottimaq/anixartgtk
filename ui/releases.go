@@ -22,7 +22,6 @@ var releasePageXML string
 var selectDubPageXML string
 
 func switchToReleasesTab(releasesBox *gtk.Box, navView *adw.NavigationView) *gtk.Box {
-	releasesBox.SetVisible(true)
 	releases, err := internal.GetLatestReleases()
 	if err != nil {
 		errorLabel := gtk.NewLabel("Error while trying to parse info from Anixart.\nMore info on the console.")
@@ -87,7 +86,8 @@ func showReleaseDetail(id string, navView *adw.NavigationView) {
 	print(fmt.Printf("%v", releaseDetails))
 
 	releasePageBuilder := gtk.NewBuilderFromString(releasePageXML)
-	releasePage := releasePageBuilder.GetObject("release-detail").Cast().(*adw.NavigationPage)
+	releasePage := releasePageBuilder.GetObject("release-page").Cast().(*adw.NavigationPage)
+	releasePage.SetTitle(releaseDetails.Name)
 
 	detailPoster := releasePageBuilder.GetObject("detail-poster").Cast().(*gtk.Picture)
 	detailName := releasePageBuilder.GetObject("detail-name").Cast().(*gtk.Label)

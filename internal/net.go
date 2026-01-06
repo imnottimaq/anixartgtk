@@ -61,9 +61,6 @@ func GetDetailedReleaseInfo(id string) (ReleaseDetailedResponse, error) {
 func GetPosterImage(imageName string) (string, error) {
 	hash := sha256.Sum256([]byte(imageName))
 	posterApiURL := alternativeApiUrl
-	if posterApiURL == "" {
-		posterApiURL = apiUrl
-	}
 	filename := hex.EncodeToString(hash[:])
 	savePath, err := xdg.CacheFile(filepath.Join("anixartgtk", "images", filename))
 	if err != nil {
@@ -98,7 +95,6 @@ func GetDubProvidersForEpisode(id string) (DubProvidersResponse, error) {
 	if id == "" {
 		return DubProvidersResponse{}, fmt.Errorf("id is empty")
 	}
-
 	resp, err := http.Get(apiUrl + "/episode/" + id)
 	if err != nil {
 		return DubProvidersResponse{}, err
