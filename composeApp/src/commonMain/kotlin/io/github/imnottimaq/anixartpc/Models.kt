@@ -3,7 +3,7 @@ package io.github.imnottimaq.anixartpc
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-class Models {
+public class Models {
     @Serializable
     data class ApiResponse<Target>(
         val code: Int,
@@ -13,7 +13,7 @@ class Models {
     @Serializable
     data class Release(
         val id: Int,
-        val posterCacheName: String,
+        @SerialName("poster") val posterCacheName: String,
         val year: String? = null,
         val grade: Float? = null,
         @SerialName("title_ru") val title: String,

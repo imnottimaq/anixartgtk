@@ -39,7 +39,7 @@ class Net {
         }
     }
     suspend fun getPosterImage(client: HttpClient, posterId: String): String{
-        val bytes = client.get("$alternativeApiUrl/poster/$posterId").readRawBytes()
+        val bytes = client.get("$alternativeApiUrl/poster/$posterId.jpg").readRawBytes()
         FileSystem.SYSTEM.write("$cacheDir/$posterId".toPath()) {
             write(bytes)
         }
