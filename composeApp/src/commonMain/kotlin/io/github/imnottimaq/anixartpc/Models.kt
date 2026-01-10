@@ -8,7 +8,11 @@ public class Models {
     data class ApiResponse<Target>(
         val code: Int,
         val content: Target? = null,
+        val related: Target? = null, // TODO: Показ франшиз в поиске
         val release: Target? = null,
+        val releases: Target? = null,
+        val types: Target? = null,
+        val episodes: Target? = null,
     )
     @Serializable
     data class Release(
@@ -35,4 +39,18 @@ public class Models {
         @SerialName("episodes_released") val episodesReleased: Int? = null,
         @SerialName("episodes_total") val episodesTotal: Int? = null,
         )
+    @Serializable
+    data class DubProviderInfo (
+        val id: Int,
+        val name: String,
+        @SerialName("workers") val cast: String? = null,
+        @SerialName("episodes_count") val episodesCount: Int,
+        @SerialName("view_count") val viewCount: Int,
+    )
+    @Serializable
+    data class EpisodeInfo (
+        val name: String,
+        val url: String,
+        @SerialName("iframe") val isIframe: Boolean,
+    )
 }
