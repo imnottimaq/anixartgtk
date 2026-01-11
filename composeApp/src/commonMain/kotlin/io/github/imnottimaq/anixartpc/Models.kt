@@ -18,7 +18,8 @@ public class Models {
     data class Release(
         val id: Int,
         @SerialName("poster") val posterCacheName: String,
-        val year: String? = null,
+        val posterUrl: String = "$alternativeApiUrl/posters/$posterCacheName.jpg",
+        val description: String? = null,
         val grade: Float? = null,
         @SerialName("title_ru") val title: String,
     )
@@ -52,5 +53,9 @@ public class Models {
         val name: String,
         val url: String,
         @SerialName("iframe") val isIframe: Boolean,
+    )
+    @Serializable
+    data class SearchRequest(
+        val query: String,
     )
 }

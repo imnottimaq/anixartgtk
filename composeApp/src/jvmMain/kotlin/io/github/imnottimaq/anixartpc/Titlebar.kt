@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,49 +39,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
-import java.awt.GraphicsEnvironment
-import java.awt.Toolkit
-
-@Stable
-class MaximizeController(private val state: WindowState) {
-    private var savedSize: DpSize? = null
-    private var savedPos: androidx.compose.ui.window.WindowPosition? = null
-
-    fun toggle() {
-        val currentlyMaximized = savedSize != null
-
-        if (!currentlyMaximized) {
-            savedSize = state.size
-            savedPos = state.position
-
-            val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
-            val gd = ge.defaultScreenDevice
-            val gc = gd.defaultConfiguration
-            val bounds = gc.bounds
-            val insets = Toolkit.getDefaultToolkit().getScreenInsets(gc)
-
-            val w = (bounds.width - insets.left - insets.right).dp
-            val h = (bounds.height - insets.top - insets.bottom).dp
-
-            state.size = DpSize(w, h)
-            state.position = androidx.compose.ui.window.WindowPosition.Absolute(
-                x = insets.left.dp,
-                y = insets.top.dp
-            )
-        } else {
-            state.size = savedSize!!
-            state.position = savedPos ?: androidx.compose.ui.window.WindowPosition.PlatformDefault
-            savedSize = null
-            savedPos = null
-        }
-    }
-
-    val isMaximized: Boolean get() = savedSize != null
-}
 
 @Composable
 fun rememberMaximizeController(windowState: WindowState): MaximizeController =
@@ -100,6 +60,7 @@ fun WindowScope.TitleBar(
     searchExpanded: Boolean,
     onSearchOpen: () -> Unit,
     onSearchBack: () -> Unit,
+    onReleaseBack: () -> Unit,
     state: WindowState,
     currentScreen: Int,
     onCurrentScreenChange: (Int) -> Unit,
@@ -107,119 +68,123 @@ fun WindowScope.TitleBar(
 ) {
     val max = rememberMaximizeController(state)
 
-    Row(
+    WindowDraggableArea(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .height(40.dp)
     ) {
-        val leftIcon = if (searchExpanded) Icons.Filled.ArrowBack else Icons.Filled.Search
-        val leftDesc = if (searchExpanded) "Back" else "Search"
-        val leftAction = if (searchExpanded) onSearchBack else onSearchOpen
-
-        SearchIconButton(
-            onClick = leftAction,
-            icon = leftIcon,
-            contentDescription = leftDesc
-        )
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (searchExpanded) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AnimatedVisibility(searchExpanded){
-                        val interactionSource = remember { MutableInteractionSource() }
-                        val textFieldColors = TextFieldDefaults.colors(
-                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            cursorColor = MaterialTheme.colorScheme.primary,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.outline,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
-                        )
-                        BasicTextField(
-                            value = searchQuery,
-                            onValueChange = onSearchQueryChange,
-                            singleLine = true,
-                            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface
-                            ),
-                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(34.dp)
-                                .padding(horizontal = 6.dp)
-                        ) { innerTextField ->
-                            TextFieldDefaults.DecorationBox(
-                                value = searchQuery,
-                                innerTextField = innerTextField,
-                                enabled = true,
-                                singleLine = true,
-                                visualTransformation = VisualTransformation.None,
-                                interactionSource = interactionSource,
-                                placeholder = { Text("Search...") },
-                                colors = textFieldColors,
-                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+            val showBack = searchExpanded || currentScreen == 5
+            val leftIcon = if (showBack) Icons.Filled.ArrowBack else Icons.Filled.Search
+            val leftDesc = if (showBack) "Back" else "Search"
+            val leftAction = when {
+                searchExpanded -> onSearchBack
+                currentScreen == 5 -> onReleaseBack
+                else -> onSearchOpen
+            }
+
+            SearchIconButton(
+                onClick = leftAction,
+                icon = leftIcon,
+                contentDescription = leftDesc
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+            ) {
+                if (searchExpanded) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AnimatedVisibility(searchExpanded){
+                            val interactionSource = remember { MutableInteractionSource() }
+                            val textFieldColors = TextFieldDefaults.colors(
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                                cursorColor = MaterialTheme.colorScheme.primary,
+                                focusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
                             )
+                            BasicTextField(
+                                value = searchQuery,
+                                onValueChange = onSearchQueryChange,
+                                singleLine = true,
+                                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface
+                                ),
+                                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(34.dp)
+                                    .padding(horizontal = 6.dp)
+                            ) { innerTextField ->
+                                TextFieldDefaults.DecorationBox(
+                                    value = searchQuery,
+                                    innerTextField = innerTextField,
+                                    enabled = true,
+                                    singleLine = true,
+                                    visualTransformation = VisualTransformation.None,
+                                    interactionSource = interactionSource,
+                                    placeholder = { Text("Search...") },
+                                    colors = textFieldColors,
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                                )
+                            }
                         }
                     }
                 }
-            } else {
-                WindowDraggableArea(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                ) { }
             }
-        }
 
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically,
-        ){
-            buttons.forEachIndexed { index, item ->
-                Box(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .padding(horizontal = 6.dp)
-                        .clickable { onCurrentScreenChange(index) },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = if (currentScreen == index) selectedIcons[index] else unselectedIcons[index],
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(item)
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                buttons.forEachIndexed { index, item ->
+                    Box(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(horizontal = 6.dp)
+                            .clickable { onCurrentScreenChange(index) },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = if (currentScreen == index) selectedIcons[index] else unselectedIcons[index],
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(item)
+                        }
                     }
                 }
             }
-        }
-        if (!isMac) {
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                WindowButton(onClick = onMinimize, icon = Icons.Filled.Remove, contentDescription = "Minimize")
 
-                WindowButton(
-                    onClick = { max.toggle() },
-                    icon = if (max.isMaximized) Icons.Filled.FilterNone else Icons.Filled.CropSquare,
-                    contentDescription = if (max.isMaximized) "Restore" else "Maximize"
-                )
+            if (!isMac) {
+                Row(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    WindowButton(onClick = onMinimize, icon = Icons.Filled.Remove, contentDescription = "Minimize")
 
-                WindowButton(onClick = onClose, icon = Icons.Filled.Close, contentDescription = "Close")
+                    WindowButton(
+                        onClick = { max.toggle() },
+                        icon = if (max.isMaximized) Icons.Filled.FilterNone else Icons.Filled.CropSquare,
+                        contentDescription = if (max.isMaximized) "Restore" else "Maximize"
+                    )
+
+                    WindowButton(onClick = onClose, icon = Icons.Filled.Close, contentDescription = "Close")
+                }
             }
         }
     }
@@ -263,8 +228,4 @@ fun WindowButton(
         )
     }
 }
-
-
-
-
 

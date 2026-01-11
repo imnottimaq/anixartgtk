@@ -11,6 +11,7 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 import kotlin.collections.emptyList
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 val apiUrl = "https://api-s.anixsekai.com"
@@ -37,13 +38,6 @@ class Net {
             resp.release
         }
     }
-    suspend fun getPosterImage(client: HttpClient, posterId: String): String{
-        val bytes = client.get("$alternativeApiUrl/poster/$posterId.jpg").readRawBytes()
-        FileSystem.SYSTEM.write("$cacheDir/$posterId".toPath()) {
-            write(bytes)
-        }
-        return "$cacheDir/$posterId"
-    }
     suspend fun getDubProvidersForEpisode(client: HttpClient, episodeId: Int): Result<List<Models.DubProviderInfo>> {
         return runCatching {
             val text = client.get("$apiUrl/episode/$episodeId") {
@@ -57,10 +51,11 @@ class Net {
         return runCatching {
             val text = client.post("$apiUrl/search/releases/0") {
                 contentType(ContentType.Application.Json)
-                setBody("""{"query":"$searchQuery"}""")
+                accept(ContentType.Application.Json)
+                setBody(json.encodeToString(Models.SearchRequest(searchQuery)))
             }.bodyAsText()
             val resp = json.decodeFromString<Models.ApiResponse<List<Models.Release>>>(text)
-            resp.releases ?: emptyList()
+            resp.releases ?: resp.content ?: emptyList()
         }
     }
 }
