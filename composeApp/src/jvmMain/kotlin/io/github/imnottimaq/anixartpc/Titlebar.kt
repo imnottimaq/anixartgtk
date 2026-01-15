@@ -27,8 +27,16 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -49,7 +57,7 @@ fun rememberMaximizeController(windowState: WindowState): MaximizeController =
 
 val buttons = listOf("Home", "Explore", "Bookmarks", "Account")
 val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.Explore, Icons.Filled.Bookmark, Icons.Filled.Person)
-val unselectedIcons = listOf(Icons.Default.Home, Icons.Default.Explore, Icons.Default.Bookmark, Icons.Default.Person)
+val unselectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.Explore, Icons.Outlined.Bookmark, Icons.Outlined.Person)
 
 @Composable
 fun WindowScope.TitleBar(
@@ -89,7 +97,8 @@ fun WindowScope.TitleBar(
             SearchIconButton(
                 onClick = leftAction,
                 icon = leftIcon,
-                contentDescription = leftDesc
+                contentDescription = leftDesc,
+                isSelected = showBack
             )
 
             Box(
@@ -150,6 +159,8 @@ fun WindowScope.TitleBar(
                 verticalAlignment = Alignment.CenterVertically,
             ){
                 buttons.forEachIndexed { index, item ->
+                    val isSelected = currentScreen == index
+                    /*
                     Box(
                         modifier = Modifier
                             .height(40.dp)
@@ -159,12 +170,52 @@ fun WindowScope.TitleBar(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                imageVector = if (currentScreen == index) selectedIcons[index] else unselectedIcons[index],
+                                imageVector = if (isSelected) selectedIcons[index] else unselectedIcons[index],
                                 contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(18.dp),
+                                tint = if (isSelected) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(item)
+                        }
+                    }
+                     */
+                    if (isSelected) {
+                        FilledTonalButton(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .padding(horizontal = 6.dp),
+                            onClick = { onCurrentScreenChange(index) }
+                        ){
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = selectedIcons[index],
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(item)
+                            }
+                        }
+                    } else{
+                        OutlinedButton(
+                            modifier = Modifier
+                                .height(40.dp)
+                                .padding(horizontal = 6.dp),
+                            onClick = { onCurrentScreenChange(index) }
+                        ){
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = unselectedIcons[index],
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text(item)
+                            }
                         }
                     }
                 }
@@ -194,16 +245,24 @@ fun WindowScope.TitleBar(
 fun SearchIconButton(
     onClick: () -> Unit,
     icon: ImageVector,
-    contentDescription: String
+    contentDescription: String,
+    isSelected: Boolean,
 ) {
-    Box(
-        modifier = Modifier
-            .height(40.dp)
-            .size(40.dp)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(icon, contentDescription = contentDescription, modifier = Modifier.size(18.dp))
+    val buttonModifier = Modifier.size(40.dp)
+    if (isSelected) {
+        FilledTonalIconButton(
+            modifier = buttonModifier,
+            onClick = onClick
+        ){
+            Icon(icon, contentDescription = contentDescription, modifier = Modifier.size(18.dp))
+        }
+    } else {
+        OutlinedIconButton(
+            modifier = buttonModifier,
+            onClick = onClick
+        ){
+            Icon(icon, contentDescription = contentDescription, modifier = Modifier.size(18.dp))
+        }
     }
 }
 
@@ -228,4 +287,3 @@ fun WindowButton(
         )
     }
 }
-

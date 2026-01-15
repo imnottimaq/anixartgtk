@@ -1,4 +1,8 @@
-﻿package io.github.imnottimaq.anixartpc
+package io.github.imnottimaq.anixartpc
+
+import anixartpc.composeapp.generated.resources.Res
+import anixartpc.composeapp.generated.resources.anixart
+import org.jetbrains.compose.resources.painterResource
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +27,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
 val client = HttpClient(CIO) { install(ContentNegotiation) {json()} }
@@ -44,15 +49,15 @@ fun main() = application {
         System.setProperty("apple.awt.windowTitleVisible", "false")
     }
     LaunchedEffect(Unit) {
-        Net().getLatestReleases(client)
+        async { Net().getLatestReleases(client)
             .onSuccess { list -> releases = list }
-            .onFailure { it.printStackTrace() }
+            .onFailure { it.printStackTrace() } }
     }
     LaunchedEffect(query, searchExpanded, currentScreen) {
         val isSearchActive = searchExpanded || currentScreen == 4
         if (!isSearchActive) return@LaunchedEffect
         if (query.isBlank()) {
-            searchResults = emptyList()
+            searchResults = listOf(Models.Release(id = 1, posterCacheName = "stub", title = "stub"))
             return@LaunchedEffect
         }
         delay(200)
@@ -66,6 +71,7 @@ fun main() = application {
         resizable = true,
         title = "AnixartPC",
         state = state,
+        icon = painterResource(Res.drawable.anixart),
     ) {
         Column(Modifier.fillMaxSize()) {
             TitleBar(
@@ -134,3 +140,5 @@ fun main() = application {
 
     }
 }
+
+

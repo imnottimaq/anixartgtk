@@ -32,6 +32,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(compose.components.resources)
 
             implementation(project.dependencies.platform("io.ktor:ktor-bom:3.3.3"))
             implementation("io.ktor:ktor-client-core")
@@ -67,6 +68,16 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "io.github.imnottimaq.anixartpc"
             packageVersion = "1.0.0"
+            linux {
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/anixart.png"))
+            }
+            windows {
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/anixart_windows.ico"))
+            }
+            macOS {
+                iconFile.set(project.file("src/commonMain/composeResources/drawable/anixart_macos.icns"))
+            }
         }
     }
 }
+

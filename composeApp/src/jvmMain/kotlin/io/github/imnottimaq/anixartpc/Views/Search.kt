@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.imnottimaq.anixartpc.Models
-
 @Composable
 fun SearchScreen(
     query: String,
@@ -22,6 +21,9 @@ fun SearchScreen(
         ) {
             Text("Start typing to search")
         }
+        return
+    }
+    if (results.equals(listOf(Models.Release(id = 1, posterCacheName = "stub", title = "stub")))){
         return
     }
 
