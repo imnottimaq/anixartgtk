@@ -6,4 +6,5 @@ import androidx.compose.runtime.Composable
 @Composable
 fun ReleasePage(releaseId: Int) {
     Text("Release page: $releaseId")
+
 }

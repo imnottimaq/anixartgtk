@@ -1,11 +1,15 @@
 package io.github.imnottimaq.anixartpc.Views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import anixartpc.composeapp.generated.resources.Res
+import anixartpc.composeapp.generated.resources.loading
+import org.jetbrains.compose.resources.painterResource
 import io.github.imnottimaq.anixartpc.Models
 @Composable
 fun SearchScreen(
@@ -23,7 +27,12 @@ fun SearchScreen(
         }
         return
     }
-    if (results.equals(listOf(Models.Release(id = 1, posterCacheName = "stub", title = "stub")))){
+    if (results.equals(listOf(Models.Release(id = 1, posterCacheName = "stub", title = "stub")))) {
+        Image(
+            painter = painterResource(Res.drawable.loading),
+            contentDescription = "Loading",
+            modifier = Modifier.fillMaxSize()
+        )
         return
     }
 

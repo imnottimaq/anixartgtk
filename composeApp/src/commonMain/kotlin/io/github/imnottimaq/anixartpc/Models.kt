@@ -1,5 +1,6 @@
 package io.github.imnottimaq.anixartpc
 
+import io.github.imnottimaq.anixartpc.Net.alternativeApiUrl
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,7 +19,7 @@ public class Models {
     data class Release(
         val id: Int,
         @SerialName("poster") val posterCacheName: String,
-        val posterUrl: String = "$alternativeApiUrl/posters/$posterCacheName.jpg",
+        val posterUrl: String = "${alternativeApiUrl}/posters/$posterCacheName.jpg",
         val description: String? = null,
         val grade: Float? = null,
         @SerialName("title_ru") val title: String,

@@ -43,6 +43,7 @@ kotlin {
             implementation("me.sujanpoudel.multiplatform.utils:multiplatform-paths:0.2.2")
             implementation("io.coil-kt.coil3:coil-compose:3.3.0")
             implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+            implementation("dev.zwander:materialyou:0.3.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
